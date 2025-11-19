@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ribbon Sentiment Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo-row">
+        <img src="ribbon_logo.png" class="logo-image">
+        <span class="brand-text">Ribbon</span>
+    </div>
+
+    <h1 class="main-title">Reddit Ticker Sentiments</h1>
+    <p class="subtitle-text">Future of Retail Investor Favored Stock Discovery</p>
+</header>
+
+<main class="main-section">
+    <div class="card-box">
+        <p id="loadingText" class="info-text">Loading...</p>
+
+        <table id="sentimentTable" class="data-table" style="display:none;">
+            <thead>
+                <tr>
+                    <th class="table-header">#</th>
+                    <th class="table-header">Ticker</th>
+                    <th class="table-header">Mentions</th>
+                    <th class="table-header">Sentiment</th>
+                </tr>
+            </thead>
+            <tbody id="sentimentBody"></tbody>
+        </table>
+    </div>
+</main>
+
+<div class="quote-area">
+    <img src="dima.png" class="quote-image">
+    <p class="quote-text">
+        "This has got me out of my gambling debts,<br>
+        due to the amazing stock finds!"
+    </p>
+</div>
+
+<footer class="footer-box">
+    <span>Cohort VI Product</span>
+</footer>
+
+<script src="app.js"></script>
+
+</body>
+</html>
