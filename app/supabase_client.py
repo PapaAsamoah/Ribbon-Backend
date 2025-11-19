@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from datetime import datetime, timezone
 from supabase import create_client
 
 load_dotenv()
