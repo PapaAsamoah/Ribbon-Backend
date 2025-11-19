@@ -4,6 +4,10 @@ from app.supabase_client import upsert_posts, get_cleaned_posts
 
 app = FastAPI()
 
+@app.get("/api/health")
+def health():
+    return {"status": "ok"}
+
 @app.get("/api/sentiment")
 def sentiment(subreddit: str = "wallstreetbets"):
     posts = get_top_posts_with_comments(

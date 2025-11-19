@@ -19,7 +19,7 @@ def upsert_posts(posts):
         row["post_id"] = post["post_id"]
         row["title"] = post["title"]
         row["selftext"] = post["selftext"]
-        row["created_utc"] = post["created_utc"]
+        #row["created_utc"] = post["created_utc"]
         row["cleaned"] = False
         rows_to_save.append(row)
 
