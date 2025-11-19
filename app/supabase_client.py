@@ -8,7 +8,7 @@ supabase_url = os.getenv("SUPABASE_URL")
 supabase_key = os.getenv("SUPABASE_ANON_KEY")
 supabase = create_client(supabase_url, supabase_key)
 
-def save_raw_posts(posts):
+def upsert_posts(posts):
     if not posts:
         return None
 
@@ -26,7 +26,7 @@ def save_raw_posts(posts):
     result = supabase.table("reddit_posts").upsert(rows_to_save).execute()
     return result.model_dump()
 
-def fetch_cleaned_posts():
+def get_cleaned_posts():
     query = (
         supabase.table("reddit_posts_clean")
         .select("post_id, tickers, polarity, cleaned_at")
