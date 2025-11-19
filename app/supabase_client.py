@@ -5,39 +5,35 @@ from supabase import create_client
 
 load_dotenv()
 
-url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_ANON_KEY")
-sb = create_client(url, key)
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_ANON_KEY")
+supabase = create_client(supabase_url, supabase_key)
 
-def upsert_posts(rows):
-    if not rows:
+def save_raw_posts(posts):
+    if not posts:
         return None
 
-    data = []
+    rows_to_save = []
 
-    for r in rows:
-        item = {}
-        item["post_id"] = r["post_id"]
-        item["title"] = r["title"]
-        item["selftext"] = r["selftext"]
-        item["created_utc"] = r["created_utc"]
+    for post in posts:
+        row = {}
+        row["post_id"] = post["post_id"]
+        row["title"] = post["title"]
+        row["selftext"] = post["selftext"]
+        row["created_utc"] = post["created_utc"]
+        row["cleaned"] = False
+        rows_to_save.append(row)
 
-        t = datetime.fromtimestamp(r["created_utc"], timezone.utc)
-        item["created_at"] = t.isoformat()
+    result = supabase.table("reddit_posts").upsert(rows_to_save).execute()
+    return result.model_dump()
 
-        item["cleaned"] = False
-        data.append(item)
-
-    res = sb.table("reddit_posts").upsert(data).execute()
-    return res.model_dump()
-
-def get_cleaned_posts():
+def fetch_cleaned_posts():
     query = (
-        sb.table("reddit_posts_clean")
+        supabase.table("reddit_posts_clean")
         .select("post_id, tickers, polarity, cleaned_at")
         .filter("tickers", "not.is", "null")
         .order("cleaned_at", desc=True)
     )
 
-    res = query.execute()
-    return res.data
+    response = query.execute()
+    return response.data
