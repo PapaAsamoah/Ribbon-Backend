@@ -23,7 +23,7 @@ def upsert_posts(posts):
         row["cleaned"] = False
         rows_to_save.append(row)
 
-    result = supabase.table("reddit_posts").upsert(rows_to_save).execute()
+    result = supabase.table("reddit_posts").upsert(rows_to_save, on_conflict="post_id").execute()
     return result.model_dump()
 
 def get_cleaned_posts():
