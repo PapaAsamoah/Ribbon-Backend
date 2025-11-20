@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.supabase_client import get_cleaned_posts
+from app.reddit_client import get_top_posts_with_comments
+from app.supabase_client import upsert_posts, get_cleaned_posts
 
 app = FastAPI()
 
