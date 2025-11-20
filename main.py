@@ -13,6 +13,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/fetch_posts")
+def fetch_posts(subreddit: str = "wallstreetbets", limit: int = 50):
+    posts = get_top_posts_with_comments(subreddit=subreddit, limit=limit)
+    upsert_result = upsert_posts(posts)
+    return {"fetched_post_count": len(posts), "upsert_result": upsert_result}
+
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
