@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.supabase_client import get_cleaned_posts
+from app.reddit_client import get_top_posts_with_comments
+from app.supabase_client import get_cleaned_posts, upsert_posts, get_raw_posts, save_cleaned_posts
+from app.spacy_cleaner import process_post
 
 app = FastAPI()
 
@@ -15,6 +17,28 @@ app.add_middleware(
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/api/reddit_load")
+def load_reddit(subreddit: str = "wallstreetbets"):
+    posts = get_top_posts_with_comments(subreddit=subreddit, limit=50, max_comments=10, time_filter="day")
+    upsert_posts(posts)
+    return {"inserted": len(posts)}
+
+@app.get("/api/clean")
+def clean():
+    raw = get_raw_posts()
+    cleaned_rows = []
+
+    for post in raw:
+        processed = process_post(post["title"] + " " + post["selftext"])
+        cleaned_rows.append({
+            "post_id": post["post_id"],
+            "tickers": processed["tickers"],
+            "polarity": processed["polarity"]
+        })
+
+    save_cleaned_posts(cleaned_rows)
+    return {"cleaned": len(cleaned_rows)}
 
 @app.get("/api/sentiment")
 def sentiment(subreddit: str = "wallstreetbets"):
