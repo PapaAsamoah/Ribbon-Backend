@@ -19,14 +19,31 @@ def health():
 
 @app.get("/api/sentiment")
 def sentiment(subreddit: str = "wallstreetbets"):
-    posts = get_top_posts_with_comments(
-        subreddit=subreddit,
-        limit=50,
-        max_comments=5,
-        time_filter="week"
-    )
+    cleaned: list[dict] = get_cleaned_posts()
+    ticker_stats: dict[str, dict[str, float | int]] = {}
 
-    upsert_posts(posts)
+    for post in cleaned:
+        tickers: list[str] = post.get("tickers", [])
+        polarity: float = post.get("polarity", 0)
 
-    cleaned = get_cleaned_posts()
-    return cleaned
+        for t in tickers:
+            t = t.upper().strip()
+
+            if t not in ticker_stats:
+                ticker_stats[t] = {"count": 0, "sentiment_sum": 0}
+
+            ticker_stats[t]["count"] += 1
+            ticker_stats[t]["sentiment_sum"] += polarity
+
+    results: list[dict[str, str | int | float]] = []
+
+    for t, data in ticker_stats.items():
+        avg: float = data["sentiment_sum"] / data["count"]
+        results.append({
+            "ticker": t,
+            "mention_count": data["count"],
+            "avg_sentiment": avg
+        })
+
+    results.sort(key=lambda x: (-x["mention_count"], -x["avg_sentiment"]))
+    return results[:10]
