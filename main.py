@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.reddit_client import get_top_posts_with_comments
-from app.supabase_client import upsert_posts, get_cleaned_posts
+from app.supabase_client import get_cleaned_posts
 
 app = FastAPI()
 
@@ -12,12 +11,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/api/fetch_posts")
-def fetch_posts(subreddit: str = "wallstreetbets", limit: int = 50):
-    posts = get_top_posts_with_comments(subreddit=subreddit, limit=limit)
-    upsert_result = upsert_posts(posts)
-    return {"fetched_post_count": len(posts), "upsert_result": upsert_result}
 
 @app.get("/api/health")
 def health():
