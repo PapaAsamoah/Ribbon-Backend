@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-praw
-supabase
-python-dotenv
-spacy
-spacytextblob

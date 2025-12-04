@@ -1,6 +1,10 @@
 .env
 __pycache__/
 *.pyc
+*.pyo
 .venv/
 .DS_Store
 .vscode/
+.Python
+build/
+dist/
